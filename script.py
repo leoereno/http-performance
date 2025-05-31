@@ -9,11 +9,8 @@ parser.add_argument('--url', dest='website', required=True, help="website addres
 parser.add_argument('--o', dest='output', required=False, action="store_true", help="outputs data to a file")
 args = parser.parse_args()
 
-
-
 WEBSITE = args.website  
 OUTPUT_FILE = f"{datetime.now().strftime('%y%m%d-%H%M')}-report.txt"
-#OUTPUT_FILE = args.output
 
 cmd = ["httping", WEBSITE, "-c", "10", "-M"]
 try:
@@ -30,7 +27,6 @@ if result.returncode != 0:
 responses = []
 try:
     data = json.loads(result.stdout.strip())
-    #print(data)
     for i in data:
         responses.append(i)
 except json.JSONDecodeError as e:
@@ -43,7 +39,6 @@ if not responses:
 total_rtt = sum(float((r["total_ms"]).replace(",", ".")) for r in responses)
 average_rtt = total_rtt / len(responses)
 
-# Write report
 if args.output:
     with open(OUTPUT_FILE, "w") as f:
         f.write(f"HTTPing Report for {WEBSITE}\n")
@@ -53,7 +48,6 @@ if args.output:
         f.write("\nDetailed responses:\n")
         for i,r in enumerate(responses, 1):
             f.write(f"Ping {i}: Status {str(r['http_code'])}, RTT {float((r['total_ms']).replace(",", ".")):.2f} ms\n")
-
     print(f"Report written to {OUTPUT_FILE}")
 else:
     print("=" * 40 + "\n")
