@@ -6,13 +6,14 @@ from datetime import datetime
 
 parser = argparse.ArgumentParser(description='Measure a website average https responsiveness time')
 parser.add_argument('--url', dest='website', required=True, help="website address")
-parser.add_argument('--o', dest='output', required=False, default=False, help="outputs data to a file")
+parser.add_argument('--o', dest='output', required=False, action="store_true", help="outputs data to a file")
 args = parser.parse_args()
 
 
 
 WEBSITE = args.website  
 OUTPUT_FILE = f"{datetime.now().strftime('%y%m%d-%H%M')}-report.txt"
+#OUTPUT_FILE = args.output
 
 cmd = ["httping", WEBSITE, "-c", "10", "-M"]
 try:
@@ -43,7 +44,7 @@ total_rtt = sum(float((r["total_ms"]).replace(",", ".")) for r in responses)
 average_rtt = total_rtt / len(responses)
 
 # Write report
-if parser.output is True:
+if args.output:
     with open(OUTPUT_FILE, "w") as f:
         f.write(f"HTTPing Report for {WEBSITE}\n")
         f.write("=" * 40 + "\n")
@@ -55,7 +56,7 @@ if parser.output is True:
 
     print(f"Report written to {OUTPUT_FILE}")
 else:
-    print(f"{WEBSITE}\n")
     print("=" * 40 + "\n")
-    print(f"Average loading time: {average_rtt}\n")
+    print(f"{WEBSITE}\n")
+    print(f"Average loading time: {average_rtt:.2f}ms\n")
     print("=" * 40 + "\n")
