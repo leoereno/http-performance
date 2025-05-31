@@ -1,2 +1,3 @@
 # http-responsiveness
-usage: python script.py URL
+dependencies: httping
+usage: python script.py *URL*
