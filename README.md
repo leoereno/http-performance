@@ -1,2 +1,2 @@
 # http-responsiveness
-usage: python script.py <WEBSITE URL>
+usage: python script.py URL
